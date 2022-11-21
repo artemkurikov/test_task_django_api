@@ -38,15 +38,23 @@ def get_list_department(request):
     return JsonResponse(obj_department)
 
 def get_name_by_id(request, id):
+    obj_user = {}
+    obj_user['obj_user'] = []
     cur.execute(f'select name, table_one.surname, department, position from table_one,table_three where id_user={id} and table_one.surname=table_three.surname;')
     result = cur.fetchall()
-    
-    return HttpResponse(result)
+    for name, surname, department, position in result:
+        obj_user['obj_user'].append({"name": name, "surname": surname, "department": department, "position": position})
+
+    return JsonResponse(obj_user)
 
 def get_info_of_slaves(request):
+    all_user = {}
+    all_user['all_user'] = []
     cur.execute('select id_user, name, table_one.surname, department, position from table_one,table_three where table_one.surname=table_three.surname;')
     result = cur.fetchall()
-    return HttpResponse(result)
+    for id_user, name, surname, department, position in result:
+        all_user['all_user'].append({"id": id_user, "name": name, "surname": surname, "department": department, "position": position})
+    return JsonResponse(all_user)
 
 def post_test(request):
     decode = request.body.decode('utf-8')
